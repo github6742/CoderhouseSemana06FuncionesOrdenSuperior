@@ -111,7 +111,7 @@ const listaPrecioArticulos = [
         marca: "DREAN",
         precio: 1600000
       }
-]
+];
 
 class Articulo {
       constructor(id,
@@ -132,7 +132,6 @@ class Articulo {
 
 };
 
-
 // funcion principal
 function functionPrincipalSimulador(){
 
@@ -152,10 +151,13 @@ function functionPrincipalSimulador(){
                  listaPrecioArticulos.push(cargarArticulo());
                  break;
             case 2:
-                 informarListaArticulos();
+                 informarListaPrecioArticulos();
                  break;   
             case 3:
-                 modificarPrecioArticulos();
+                 informarListaPrecioArticulosConDescuento();
+                 break;     
+            case 4:
+                 buscarArticuloPorId();
                  break;   
             case 9:
                  salir = true;
@@ -186,7 +188,8 @@ function seleccionarOpcionMenu(){
                           "Seleccione opcion:\n" + 
                           " 1-Crea Articulos\n" +
                           " 2-Lista de Articulos\n" +
-                          " 3-Modifica Precio Articulos\n" +
+                          " 3-Lista de Articulos con Descuento\n" +
+                          " 4-Buscar Articulo por Id\n" +
                           " 9-Salida"
                          );
 
@@ -202,8 +205,8 @@ function seleccionarOpcionMenu(){
 };
 
 function cargarArticulo(){
-    let codigo;
     let id = listaPrecioArticulos.length+1;
+    let codigo;
     console.log("id: " + id);
     do {
         codigo = prompt("Ingrese codigo de articulo: ");
@@ -277,7 +280,6 @@ function validarPrecio(precio){
 
 };
 
-
 function validarPorcentaje(porcentaje){
 
      if (esNulo(porcentaje)) {
@@ -291,39 +293,84 @@ function validarPorcentaje(porcentaje){
      };
 };
 
-  
+function informarListaPrecioArticulos(){
 
-function informarListaArticulos(){
+    console.log("LOG - informarListaPrecioArticulos - 0000");
 
-    console.log("LOG - informarListaArticulos - 0000");
+    listaPrecioArticulos.forEach(articulo => {
+    console.log(" - Id: " + articulo.id + 
+                " - Codigo: " + articulo.codigo + 
+                " - Nombre: " + articulo.nombre + 
+                " - Marca: " + articulo.marca  +    
+                " - Precio: " + articulo.precio);
+    });
 
-    let mensaje = "Listado de Articulos: \n";
-        
-    for (const articulo of listaPrecioArticulos) {
-         console.log(" - Id: " +  articulo.id + 
-                     " - Codigo: " +  articulo.codigo + 
-                     " - Nombre: " +  articulo.nombre + 
-                     " - Marca: " +  articulo.marca  +    
-                     " - Precio: " +  articulo.precio);
-    };
-
-    console.log("LOG - informarListaArticulos - 9999");     
+    console.log("LOG - informarListaPrecioArticulos - 9999");     
 
 };
 
- 
-function modificarPrecioArticulos(){
+function informarListaPrecioArticulosConDescuento(){
     
+    console.log("LOG - informarListaPrecioArticulosConDescuento - 0000");
+
     let porcentaje;
     do {
-           porcentaje = prompt("Ingrese porcentaje");
+           porcentaje = prompt("Ingrese porcentaje de descuento: ");
     } while (!validarPorcentaje(porcentaje));
-        
-    for ( const articulo of listaPrecioArticulos) {
-          articulo.modificarPrecioPorcentaje(parseFloat(porcentaje));            
-    };
+
+    const articulosDescuento = listaPrecioArticulos.map(articulo => {
+        let precioDescuento = articulo.precio - (articulo.precio * (porcentaje/100));
+        return {
+            id: articulo.id,
+            codigo: articulo.codigo,
+            nombre: articulo.nombre,
+            marca: articulo.marca,
+            precio: precioDescuento
+        };
+    });
+
+    articulosDescuento.forEach(articulo => {
+    console.log(" - Id: " + articulo.id + 
+                " - Codigo: " + articulo.codigo + 
+                " - Nombre: " + articulo.nombre + 
+                " - Marca: " + articulo.marca  +    
+                " - Precio: " + articulo.precio);
+    });
+
+    console.log("LOG - informarListaPrecioArticulosConDescuento - 9999");
+
 };
 
+
+function buscarArticuloPorId(){
+    
+    console.log("LOG - buscarArticuloPorId - 0000");
+
+    let id;
+    do {
+           id = prompt("Ingrese Id del articulo: ");
+    } while (!validarId(id));
+    
+    let busqueda = listaPrecioArticulos.find(articulo => articulo.id == id)
+
+    console.log(busqueda);
+
+    console.log("LOG - buscarArticuloPorId - 9999");
+
+};
+
+function validarId(id){
+
+     if (esNulo(id)) {
+        alert("(Validar Id) - Debe ingresar un valor");                    
+        return false;
+      } else if (esString(id)) { 
+        alert("(Validar Id) - Debe ingresar un valor numerico");                    
+        return false;
+      } else {
+        return true;
+     };
+};
 // funciones mas atomicas
 function esNulo(valor){
   if(valor == null){return true}; return false;
