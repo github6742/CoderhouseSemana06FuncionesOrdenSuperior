@@ -4,6 +4,7 @@ const listaPrecioArticulos = [
         codigo: "TVS0033PCO01",
         nombre: "TELEVISOR SMART TV PHILCO 33 PULGADAS", 
         marca: "PHILCO",
+        categoria: "TELEVISOR",
         precio: 331000
       },                                 
       {
@@ -11,6 +12,7 @@ const listaPrecioArticulos = [
         codigo: "TVS0033PHI02",
         nombre: "TELEVISOR SMART TV PHILLIPS 33 PULGADAS", 
         marca: "PHILLIPS",
+        categoria: "TELEVISOR",
         precio: 332000,
       },                                 
       {
@@ -18,6 +20,7 @@ const listaPrecioArticulos = [
         codigo: "TVS0033SAM03",
         nombre: "TELEVISOR SMART TV SAMSUNG 33 PULGADAS", 
         marca: "SAMSUNG",
+        categoria: "TELEVISOR",
         precio: 333000 
       },                                 
       {
@@ -25,6 +28,7 @@ const listaPrecioArticulos = [
         codigo: "TVS0033JVL04",
         nombre: "TELEVISOR SMART TV JVL 33 PULGADAS",
         marca: "JVL",
+        categoria: "TELEVISOR",
         precio: 334000
       },                                 
       {
@@ -32,6 +36,7 @@ const listaPrecioArticulos = [
         codigo: "TVS0042PCO05",
         nombre: "TELEVISOR SMART TV PHILCO 42 PULGADAS",
         marca: "PHILCO",
+        categoria: "TELEVISOR",
         precio: 425000
       },                                 
       {
@@ -39,6 +44,7 @@ const listaPrecioArticulos = [
         codigo: "TVS0042PHI06",
         nombre: "TELEVISOR SMART TV PHILLIPS 42 PULGADAS",
         marca: "PHILLIPS",
+        categoria: "TELEVISOR",
         precio: 426000
       },                                 
       {
@@ -46,6 +52,7 @@ const listaPrecioArticulos = [
         codigo: "TVS0042SAM07",
         nombre: "TELEVISOR SMART TV SAMSUNG 42 PULGADAS",
         marca: "SAMSUNG",
+        categoria: "TELEVISOR",
         precio: 427000 
       },                                 
       {
@@ -53,6 +60,7 @@ const listaPrecioArticulos = [
         codigo: "TVS0042JVL08",
         nombre: "TELEVISOR SMART TV JVL 42 PULGADAS", 
         marca: "JVL",
+        categoria: "TELEVISOR",
         precio: 580000
       },                                 
       {
@@ -60,6 +68,7 @@ const listaPrecioArticulos = [
         codigo: "COCESC009",
         nombre: "COCINA ESCORIAL",
         marca: "ESCORIAL",
+        categoria: "COCINA",
         precio: 590000 
       },                                 
       {
@@ -67,6 +76,7 @@ const listaPrecioArticulos = [
         codigo: "COCDRE010",
         nombre: "COCINA DREAN",
         marca: "DREAN",
+        categoria: "COCINA",
         precio: 510000
       },                                 
       {
@@ -74,6 +84,7 @@ const listaPrecioArticulos = [
         codigo: "COCWHI011",
         nombre: "COCINA WHIRLPOOL", 
         marca: "WHIRLPOOL",
+        categoria: "COCINA",
         precio: 511000 
       },                                 
       {
@@ -81,6 +92,7 @@ const listaPrecioArticulos = [
         codigo: "COCELE012",
         nombre: "COCINA ELECTROLUX", 
         marca: "ELECTROLUX",
+        categoria: "COCINA",
         precio: 512000 
       },                                 
       {
@@ -88,6 +100,7 @@ const listaPrecioArticulos = [
         codigo: "HELELE0013",
         nombre: "HELADERA ELECTOLUX INVERTER NO FROST",
         marca: "ELECTROLUX",
+        categoria: "HELADERA",
         precio: 1300000 
       },                                 
       {
@@ -95,6 +108,7 @@ const listaPrecioArticulos = [
         codigo: "HELWHI0014",
         nombre: "HELADERA WHIRLPOOL INVERTER NO FROST",
         marca: "WHIRLPOOL",
+        categoria: "HELADERA",
         precio: 1400000
       },                                 
       {
@@ -102,6 +116,7 @@ const listaPrecioArticulos = [
         codigo: "HELGAG0015",
         nombre: "HELADERA GAFA INVERTER",
         marca: "SAMSUNG",
+        categoria: "HELADERA",
         precio: 1500000
       },                                 
       {
@@ -109,6 +124,7 @@ const listaPrecioArticulos = [
         codigo: "HELDRE0016",
         nombre: "HELADERA DREAN INVERTER",
         marca: "DREAN",
+        categoria: "HELADERA",
         precio: 1600000
       }
 ];
@@ -118,11 +134,13 @@ class Articulo {
                   codigo, 
                   nombre, 
                   marca,
+                  categoria,
                   precio){
         this.id = id,
         this.codigo = codigo;
         this.nombre = nombre;
         this.marca = marca;
+        this.categoria = categoria;
         this.precio = precio;
       };
 
@@ -158,6 +176,15 @@ function functionPrincipalSimulador(){
                  break;     
             case 4:
                  buscarArticuloPorId();
+                 break;      
+            case 5:
+                 buscarArticuloPorCategoria();
+                 break;        
+            case 6:
+                 buscarArticuloPorNombre();
+                 break;          
+            case 7:
+                 verificarExisteArticulo();
                  break;   
             case 9:
                  salir = true;
@@ -183,13 +210,16 @@ functionPrincipalSimulador();
 function seleccionarOpcionMenu(){
 
   console.log("LOG - SeleccionarOpcionMenu - 0000");
- 
+
   let opcionMenu = prompt("MODULO DE INVENTARIO\n\n" + 
                           "Seleccione opcion:\n" + 
                           " 1-Crea Articulos\n" +
                           " 2-Lista de Articulos\n" +
                           " 3-Lista de Articulos con Descuento\n" +
                           " 4-Buscar Articulo por Id\n" +
+                          " 5-Buscar Articulo por Categoria\n" +
+                          " 6-Buscar Articulo por Nombre\n" +
+                          " 7-Verificar Existencia Articulo\n" +
                           " 9-Salida"
                          );
 
@@ -222,6 +252,12 @@ function cargarArticulo(){
          marca = prompt("Ingrese marca de articulo: ");
     } while (!validarMarca(marca));
 
+
+    let categoria;
+    do {
+         categoria = prompt("Ingrese categoria de articulo: ");
+    } while (!validarCategoria(categoria));
+
     let precio;
     do {
          precio = prompt("Ingrese precio de articulo: ");
@@ -247,7 +283,7 @@ function validarCodigo(codigo){
 function validarNombre(nombre){
 
      if (esNulo(nombre)) {
-        alert("(Validar Nombre) - Debe Ingresar un Valor");                    
+        alert("(Validar Nombre) - Debe ingresar un valor");                    
         return false;
       } else {
         return true;
@@ -258,7 +294,18 @@ function validarNombre(nombre){
 function validarMarca(marca){
 
      if (esNulo(marca)) {
-        alert("(Validar Marca) - Debe Ingresar un Valor");                    
+        alert("(Validar Marca) - Debe ingresar un valor");                    
+        return false;
+      } else {
+        return true;
+     };
+
+};
+
+function validarCategoria(categoria){
+
+     if (esNulo(categoria)) {
+        alert("(Validar Categoria) - Debe ingresar un valor");                    
         return false;
       } else {
         return true;
@@ -283,10 +330,10 @@ function validarPrecio(precio){
 function validarPorcentaje(porcentaje){
 
      if (esNulo(porcentaje)) {
-        alert("(Validar Porcenaje) - Debe Ingresar un valor");                    
+        alert("(Validar Porcenaje) - Debe ingresar un valor");                    
         return false;
       } else if (esString(porcentaje)) { 
-        alert("(Validar Porcentaje) - Debe Ingresar un valor numerico");                    
+        alert("(Validar Porcentaje) - Debe ingresar un valor numerico");                    
         return false;
       } else {
         return true;
@@ -301,7 +348,8 @@ function informarListaPrecioArticulos(){
     console.log(" - Id: " + articulo.id + 
                 " - Codigo: " + articulo.codigo + 
                 " - Nombre: " + articulo.nombre + 
-                " - Marca: " + articulo.marca  +    
+                " - Marca: " + articulo.marca  +   
+                " - Categoria: " + articulo.categoria  +    
                 " - Precio: " + articulo.precio);
     });
 
@@ -325,6 +373,7 @@ function informarListaPrecioArticulosConDescuento(){
             codigo: articulo.codigo,
             nombre: articulo.nombre,
             marca: articulo.marca,
+            categoria: articulo.categoria,
             precio: precioDescuento
         };
     });
@@ -333,7 +382,8 @@ function informarListaPrecioArticulosConDescuento(){
     console.log(" - Id: " + articulo.id + 
                 " - Codigo: " + articulo.codigo + 
                 " - Nombre: " + articulo.nombre + 
-                " - Marca: " + articulo.marca  +    
+                " - Marca: " + articulo.marca  +  
+                " - Categoria: " + articulo.categoria  +    
                 " - Precio: " + articulo.precio);
     });
 
@@ -351,9 +401,22 @@ function buscarArticuloPorId(){
            id = prompt("Ingrese Id del articulo: ");
     } while (!validarId(id));
     
-    let busqueda = listaPrecioArticulos.find(articulo => articulo.id == id)
+    let articuloEncontrado = listaPrecioArticulos.find(articulo => articulo.id == id)
 
-    console.log(busqueda);
+    console.log(" - Id: " + articuloEncontrado.id + 
+                " - Codigo: " + articuloEncontrado.codigo + 
+                " - Nombre: " + articuloEncontrado.nombre + 
+                " - Marca: " + articuloEncontrado.marca  +   
+                " - Categoria: " + articuloEncontrado.categoria  +     
+                " - Precio: " + articuloEncontrado.precio);
+
+    alert("Articulo encontrado: " +
+          "\n - Id: " + articuloEncontrado.id + 
+          "\n - Codigo: " + articuloEncontrado.codigo + 
+          "\n - Nombre: " + articuloEncontrado.nombre + 
+          "\n - Marca: " + articuloEncontrado.marca  +    
+          "\n - Categoria: " + articuloEncontrado.categoria  +    
+          "\n - Precio: " + articuloEncontrado.precio);
 
     console.log("LOG - buscarArticuloPorId - 9999");
 
@@ -370,6 +433,143 @@ function validarId(id){
       } else {
         return true;
      };
+};
+
+function buscarArticuloPorCategoria(){
+    
+    console.log("LOG - buscarArticuloPorCategoria - 0000");
+
+    let categoria;
+
+    do {
+           categoria = prompt("Ingrese categoria de articulo: "+
+                              "\n - 1 - TELEVISORES" +
+                              "\n - 2 - COCINAS" +
+                              "\n - 3 - HELADERAS" 
+           );
+    } while (!validarCategoria(categoria));
+
+   console.log("LOG - buscarArticuloPorCategoria - 0010 - categoria: " +  categoria);
+
+   switch (parseInt(categoria)){
+            case 1:
+                categoriaSeleccionada = "TELEVISOR";
+                break;
+            case 2:
+                categoriaSeleccionada = "COCINA";
+                break;
+            default:
+                categoriaSeleccionada = "HELADERA";
+                break;
+           /* default:
+                 alert("Opcion invalida, vuelva a ingresar la opcion");
+                return false;*/
+        };
+    
+    let articulosEncontrados = listaPrecioArticulos.filter(articulo => articulo.categoria == categoriaSeleccionada )
+
+    articulosEncontrados.forEach(articulo => {
+    console.log(" - Id: " + articulo.id + 
+                " - Codigo: " + articulo.codigo + 
+                " - Nombre: " + articulo.nombre + 
+                " - Marca: " + articulo.marca  +  
+                " - Categoria: " + articulo.categoria  +    
+                " - Precio: " + articulo.precio);
+    });
+
+    console.log("LOG - buscarArticuloPorCategoria - 9999");
+
+};
+
+
+
+function validarCategoria(categoria){
+
+     if (esNulo(categoria)) {
+        alert("(Validar Categoria - Debe ingresar un valor");                    
+        return false;
+      } else if (esString(categoria)) { 
+        alert("(Validar Categoria) - Debe ingresar un valor numerico");                    
+        return false;
+      } else {
+          if (categoria >=1 && categoria <= 3) {
+            return true;
+          } else {
+            alert("Opcion invalida, vuelva a ingresar la opcion");
+            return false;        
+          };
+     };
+};
+
+
+
+
+function buscarArticuloPorNombre(){
+    
+    console.log("LOG - buscarArticuloPorNombre - 0000");
+
+    let nombre;
+
+    do {
+           nombre = prompt("Ingrese el nombre o parte del nombre, (por ejemplo smart, inverter) " 
+           );
+    } while (!validarNombre(nombre));
+
+    console.log("LOG - buscarArticuloPorNombre - 0010 - nombre: " + nombre);
+   
+    let articulosEncontrados = listaPrecioArticulos.filter(articulo => articulo.nombre.toUpperCase().includes(nombre.toUpperCase()) );
+
+    articulosEncontrados.forEach(articulo => {
+    console.log(" - Id: " + articulo.id + 
+                " - Codigo: " + articulo.codigo + 
+                " - Nombre: " + articulo.nombre + 
+                " - Marca: " + articulo.marca  +  
+                " - Categoria: " + articulo.categoria  +    
+                " - Precio: " + articulo.precio);
+    });
+
+    console.log("LOG - buscarArticuloPorNombre - 9999");
+
+};
+
+
+function validarNombre(nombre){
+
+     if (esNulo(nombre)) {
+        alert("(Validar Nombre) - Debe ingresar un valor");                    
+        return false;
+      } else {          
+            return true;        
+     };
+};
+
+
+
+function verificarExisteArticulo(){
+    
+    console.log("LOG - verificarExisteArticulo - 0000");
+
+    let codigo;
+
+    do {
+           codigo = prompt("Ingrese el codigo de articulo: " 
+           );
+    } while (!validarCodigo(codigo));
+
+    console.log("LOG - verificarExisteArticulo - 0010 - codigo: " + codigo);
+   
+    let existeCodigo = listaPrecioArticulos.some(articulo => articulo.codigo.toUpperCase() == codigo.toUpperCase() );
+
+    if (!existeCodigo){
+       alert("El articulo no existe");
+       console.log("El articulo no existe");
+    } else {
+       alert("El articulo si existe " );
+       console.log("El articulo si existe " );
+  };
+
+    console.log("LOG - verificarExisteArticulo - 9999");
+
 };
 // funciones mas atomicas
 function esNulo(valor){
