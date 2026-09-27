@@ -13,7 +13,7 @@ const listaPrecioArticulos = [
         nombre: "TELEVISOR SMART TV PHILLIPS 33 PULGADAS", 
         marca: "PHILLIPS",
         categoria: "TELEVISOR",
-        precio: 332000,
+        precio: 332000
       },                                 
       {
         id: 3,
@@ -21,7 +21,7 @@ const listaPrecioArticulos = [
         nombre: "TELEVISOR SMART TV SAMSUNG 33 PULGADAS", 
         marca: "SAMSUNG",
         categoria: "TELEVISOR",
-        precio: 333000 
+        precio: 333000
       },                                 
       {
         id: 4,
@@ -53,7 +53,7 @@ const listaPrecioArticulos = [
         nombre: "TELEVISOR SMART TV SAMSUNG 42 PULGADAS",
         marca: "SAMSUNG",
         categoria: "TELEVISOR",
-        precio: 427000 
+        precio: 427000
       },                                 
       {
         id: 8,
@@ -69,7 +69,7 @@ const listaPrecioArticulos = [
         nombre: "COCINA ESCORIAL",
         marca: "ESCORIAL",
         categoria: "COCINA",
-        precio: 590000 
+        precio: 590000
       },                                 
       {
         id: 10,
@@ -85,7 +85,7 @@ const listaPrecioArticulos = [
         nombre: "COCINA WHIRLPOOL", 
         marca: "WHIRLPOOL",
         categoria: "COCINA",
-        precio: 511000 
+        precio: 511000
       },                                 
       {
         id: 12,
@@ -93,7 +93,7 @@ const listaPrecioArticulos = [
         nombre: "COCINA ELECTROLUX", 
         marca: "ELECTROLUX",
         categoria: "COCINA",
-        precio: 512000 
+        precio: 512000
       },                                 
       {
         id: 13,
@@ -101,7 +101,7 @@ const listaPrecioArticulos = [
         nombre: "HELADERA ELECTOLUX INVERTER NO FROST",
         marca: "ELECTROLUX",
         categoria: "HELADERA",
-        precio: 1300000 
+        precio: 1300000
       },                                 
       {
         id: 14,
@@ -129,6 +129,7 @@ const listaPrecioArticulos = [
       }
 ];
 
+const carritoCompras = [];
 class Articulo {
       constructor(id,
                   codigo, 
@@ -143,11 +144,15 @@ class Articulo {
         this.categoria = categoria;
         this.precio = precio;
       };
+};
 
-      modificarPrecioPorcentaje(porcentaje){
-        this.precio += (this.precio*(porcentaje/100));
-      };    
-
+class Compra {
+      constructor(codigo, nombre, precio, cantidad) {
+        this.codigo = codigo;
+        this.nombre = nombre;
+        this.precio = precio;
+        this.cantidad = cantidad;
+      };
 };
 
 // funcion principal
@@ -185,6 +190,9 @@ function functionPrincipalSimulador(){
                  break;          
             case 7:
                  verificarExisteArticulo();
+                 break;           
+            case 8:
+                 comprar();
                  break;   
             case 9:
                  salir = true;
@@ -211,7 +219,7 @@ function seleccionarOpcionMenu(){
 
   console.log("LOG - SeleccionarOpcionMenu - 0000");
 
-  let opcionMenu = prompt("MODULO DE INVENTARIO\n\n" + 
+  let opcionMenu = prompt("MODULO DE ARTICULOS, PRECIOS, COMPPRAS\n\n" + 
                           "Seleccione opcion:\n" + 
                           " 1-Crea Articulos\n" +
                           " 2-Lista de Articulos\n" +
@@ -220,6 +228,7 @@ function seleccionarOpcionMenu(){
                           " 5-Buscar Articulo por Categoria\n" +
                           " 6-Buscar Articulo por Nombre\n" +
                           " 7-Verificar Existencia Articulo\n" +
+                          " 8-Comprar\n" +
                           " 9-Salida"
                          );
 
@@ -461,9 +470,6 @@ function buscarArticuloPorCategoria(){
             default:
                 categoriaSeleccionada = "HELADERA";
                 break;
-           /* default:
-                 alert("Opcion invalida, vuelva a ingresar la opcion");
-                return false;*/
         };
     
     let articulosEncontrados = listaPrecioArticulos.filter(articulo => articulo.categoria == categoriaSeleccionada )
@@ -480,8 +486,6 @@ function buscarArticuloPorCategoria(){
     console.log("LOG - buscarArticuloPorCategoria - 9999");
 
 };
-
-
 
 function validarCategoria(categoria){
 
@@ -500,9 +504,6 @@ function validarCategoria(categoria){
           };
      };
 };
-
-
-
 
 function buscarArticuloPorNombre(){
     
@@ -538,12 +539,10 @@ function validarNombre(nombre){
      if (esNulo(nombre)) {
         alert("(Validar Nombre) - Debe ingresar un valor");                    
         return false;
-      } else {          
+     } else {          
             return true;        
      };
 };
-
-
 
 function verificarExisteArticulo(){
     
@@ -566,15 +565,163 @@ function verificarExisteArticulo(){
     } else {
        alert("El articulo si existe " );
        console.log("El articulo si existe " );
-  };
+    };
 
-    console.log("LOG - verificarExisteArticulo - 9999");
+  console.log("LOG - verificarExisteArticulo - 9999");
+
+};
+
+function comprar(){
+
+    console.log("LOG - comprar - 0000");
+
+    let articulo;
+    let categoria;
+    let seguirComprando = true;
+
+    do {
+
+         do {
+             categoria = prompt("Ingrese categoria de articulo: "+
+                                "\n - 1 - TELEVISORES" +
+                                "\n - 2 - COCINAS" +
+                                "\n - 3 - HELADERAS" 
+                                );
+
+             } while (!validarCategoria(categoria));
+
+             console.log("LOG - Comprar - 0010 - categoria: " +  categoria);
+
+             switch (parseInt(categoria)){
+                    case 1:
+                         categoriaSeleccionada = "TELEVISOR";
+                         break;
+                    case 2:
+                         categoriaSeleccionada = "COCINA";
+                         break;
+                    default:
+                         categoriaSeleccionada = "HELADERA";
+                         break;
+                    };
+    
+            let articulosEncontrados = listaPrecioArticulos.filter(articulo => articulo.categoria == categoriaSeleccionada );
+            let listaArticulos = "Ingrese el id de articulo valido:\n";
+            articulosEncontrados.forEach(articulo => {
+            listaArticulos += " - Id: " + articulo.id + 
+                        " - Nombre: " + articulo.nombre + 
+                        " - Precio: " + articulo.precio + "\n";
+            });
+            let articuloIngresado;
+            do {
+                articuloIngresado = prompt(listaArticulos);
+            } while (!validarArticuloIngresado(articuloIngresado, categoriaSeleccionada));
+
+            let articuloDeLista = listaPrecioArticulos.find(articulo => articulo.id == articuloIngresado );
+
+            console.log("LOG - Comprar - 0020 - id: " +  articuloDeLista.id +
+                                             ", nombre: " + articuloDeLista.nombre +
+                                             ", precio: " + articuloDeLista.precio
+            );
+
+            let cantidad;
+
+            do {
+                cantidad = parseInt(prompt ("Ingrese la cantidad: "));
+            } while (!validarCantidad(cantidad));            
+
+            console.log("LOG - Comprar - 0030 - cantidad: " +  cantidad);
+
+            cargarCompra(articuloDeLista.codigo, articuloDeLista.nombre, parseInt(articuloDeLista.precio), parseInt(cantidad));
+
+            console.log("LOG - Comprar - 0040 - cargarCompra()");
+
+            do {
+                 continua = prompt("Continua comprando(SI/NO): ");
+            } while (!validarContinua(continua));
+
+            
+            console.log("LOG - Comprar - 0050 - continua: " + continua);
+
+            if (continua.toUpperCase() == "SI") { seguirComprando = true;} else { seguirComprando = false;};
+
+    } while (seguirComprando);
+    
+    const total = carritoCompras.reduce((sumador, compra)  => sumador + (parseInt(compra.cantidad)*parseInt(compra.precio)),0);
+
+    console.log("El total de compras del carrito es: " + total);
+
+    carritoCompras.splice(0,carritoCompras.length);
+
+    console.log("LOG - comprar - 9999");
+
+};
+
+
+function validarArticuloIngresado(id, categoria){
+
+     console.log("LOG - validarArticuloIngresado - 0000 - id: " + id);
+     
+     let articuloEncontrado;
+
+     if (!validarId(id)) {
+        return false;
+     };
+
+     if (listaPrecioArticulos.some(articulo => articulo.id == id )){
+
+        articuloEncontrado = listaPrecioArticulos.find(articulo => articulo.id == id);
+
+        if (articuloEncontrado.id == id && articuloEncontrado.categoria == categoria){
+            return true;
+        } else {
+            alert("Id invalido");
+            return false;
+        };
+
+     } ;
+
+};
+function validarCantidad(cantidad){
+    
+
+     if (esNulo(cantidad)) {
+        alert("(Validar Cantidad) - Debe ingresar un valor");                    
+        return false;
+      } else if (esString(cantidad)) { 
+        alert("(Validar Cantidad) - Debe ingresar un valor numerico");                    
+        return false;
+      } else {
+        return true;
+     };
+};
+
+function cargarCompra(codigo, nombre, precio, cantidad){
+    
+    const compraNueva = new Compra(codigo, nombre, precio, cantidad);
+     
+    carritoCompras.push(compraNueva);
+};
+
+
+
+function validarContinua(continua){
+
+     if (esNulo(continua)) {
+        alert("(Validar Continua) - Debe ingresar un valor");                    
+        return false;
+      } else if (continua.toUpperCase() == "SI" || continua.toUpperCase() == "NO"){
+        return true;
+      } else {
+        alert("Ingrese un valor valido")  ;
+        return false;
+     };
 
 };
 // funciones mas atomicas
 function esNulo(valor){
   if(valor == null){return true}; return false;
 };
+
 function esString(valor){
   if (isNaN(Number(valor))) {return true}; return false;
 };
