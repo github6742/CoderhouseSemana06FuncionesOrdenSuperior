@@ -155,6 +155,10 @@ class Compra {
       };
 };
 
+
+const esNulo = (valor) => (valor == "");
+
+const esString = (valor) => (isNaN(Number(valor)));
 // funcion principal
 function functionPrincipalSimulador(){
 
@@ -219,7 +223,7 @@ function seleccionarOpcionMenu(){
 
   console.log("LOG - SeleccionarOpcionMenu - 0000");
 
-  let opcionMenu = prompt("MODULO DE ARTICULOS, PRECIOS, COMPPRAS\n\n" + 
+  let opcionMenu = prompt("MODULO DE ARTICULOS, PRECIOS, COMPRAS\n\n" + 
                           "Seleccione opcion:\n" + 
                           " 1-Crea Articulos\n" +
                           " 2-Lista de Articulos\n" +
@@ -654,8 +658,11 @@ function comprar(){
     const total = carritoCompras.reduce((sumador, compra)  => sumador + (parseInt(compra.cantidad)*parseInt(compra.precio)),0);
 
     console.log("El total de compras del carrito es: " + total);
+    alert("El total de compras del carrito es: " + total);
 
     carritoCompras.splice(0,carritoCompras.length);
+
+    console.log("LOG - comprar - 9990 - se borro el contenido del carrito de compras: " + carritoCompras.length)
 
     console.log("LOG - comprar - 9999");
 
@@ -722,7 +729,3 @@ function validarContinua(continua){
      };
 
 };
-// funciones mas atomicas
-const esNulo = (valor) => (valor == "");
-
-const esString = (valor) => (isNaN(Number(valor)));
