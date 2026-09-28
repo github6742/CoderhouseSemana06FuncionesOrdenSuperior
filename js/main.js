@@ -410,7 +410,9 @@ function buscarArticuloPorId(){
            id = prompt("Ingrese Id del articulo: ");
     } while (!validarId(id));
     
-    let articuloEncontrado = listaPrecioArticulos.find(articulo => articulo.id == id)
+    if (listaPrecioArticulos.some(articulo => articulo.id == id)){
+
+    let articuloEncontrado = listaPrecioArticulos.find(articulo => articulo.id == id);
 
     console.log(" - Id: " + articuloEncontrado.id + 
                 " - Codigo: " + articuloEncontrado.codigo + 
@@ -426,6 +428,9 @@ function buscarArticuloPorId(){
           "\n - Marca: " + articuloEncontrado.marca  +    
           "\n - Categoria: " + articuloEncontrado.categoria  +    
           "\n - Precio: " + articuloEncontrado.precio);
+    } else {
+        alert("Id invalido");
+    };
 
     console.log("LOG - buscarArticuloPorId - 9999");
 
@@ -718,10 +723,6 @@ function validarContinua(continua){
 
 };
 // funciones mas atomicas
-function esNulo(valor){
-  if(valor == null){return true}; return false;
-};
+const esNulo = (valor) => (valor == "");
 
-function esString(valor){
-  if (isNaN(Number(valor))) {return true}; return false;
-};
+const esString = (valor) => (isNaN(Number(valor)));
