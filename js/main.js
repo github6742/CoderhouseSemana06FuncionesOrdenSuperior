@@ -1,3 +1,4 @@
+// corregi las funciones de validaciones, por validarDatoString y validarDatoNumber, ordene las funciones(primero las defino y luego las llamo), elimine los resultados por alert y los deje por consola.
 const listaPrecioArticulos = [
       {
         id: 1,
@@ -145,7 +146,6 @@ class Articulo {
         this.precio = precio;
       };
 };
-
 class Compra {
       constructor(codigo, nombre, precio, cantidad) {
         this.codigo = codigo;
@@ -155,21 +155,290 @@ class Compra {
       };
 };
 
-
 const esNulo = (valor) => (valor == "");
-
 const esString = (valor) => (isNaN(Number(valor)));
+const validaSiNo = (valor) => ((valor.toUpperCase() == "SI" || valor.toUpperCase() == "NO"));
+const booleanoSiNo = (valor) => ((valor.toUpperCase() == "SI" ));
+const mensajeErrorNulo = "Debe ingresar un valor";
+const mensajeErrorNoNumerico = "Debe ingresar un valor numerico";
+
+function validarDatoNulo(dato){
+    if (esNulo(dato)) {
+       alert(mensajeErrorNulo);                    
+       return false;
+    }; 
+    return true;
+};
+
+function ingresarValorString(mensajePrompt){
+    let valor;
+    do {
+        valor = prompt(mensajePrompt);
+    } while (!validarDatoNulo(valor));
+    return valor;
+};
+
+function validarDatoNumber(dato){
+    if (!validarDatoNulo(dato)) {
+       return false;
+    };
+    if (esString(dato)) {
+       alert(mensajeErrorNoNumerico);
+       return false;
+    } else if (parseInt(dato) == 0){ 
+       alert("El valor debe ser mayor a 0");
+       return false;       
+    } else {
+       return true;
+    };
+};
+
+function ingresarValorNumber(mensajePrompt){
+    let valor;
+    do {
+        valor = prompt(mensajePrompt);
+    } while (!validarDatoNumber(valor));
+    return parseInt(valor);
+};
+
+function ingresarCategoria(){    
+    console.log("LOG - ingresarCategoria - 0000");
+    let categoria;  
+    do {
+        categoria = ingresarValorNumber("Ingrese categoria de articulo: "+
+                                        "\n - 1 - TELEVISORES" +
+                                        "\n - 2 - COCINAS" +
+                                        "\n - 3 - HELADERAS" );
+        console.log("LOG - ingresarCategoria - 0010 - categoria: " +  categoria);
+        switch(categoria){
+              case 0:
+                alert("Debe ingresar un valor mayor a 0, vuelva a ingresar la opcion");
+                break;
+              case 1:
+                return "TELEVISOR";
+              case 2:
+                return "COCINA";
+              case 3:
+                return "HELADERA";
+              default:
+                alert("Ingrese una opcion valida");
+        };
+        console.log("LOG - ingresarCategoria - 9999 - categoria: " + categoria);
+    } while (true);
+};
+
+function cargarArticulo(){
+    console.log("LOG - cargarArticulos - 0000");
+    let id = listaPrecioArticulos.length+1;
+    let codigo;
+    let nombre;
+    let marca;
+    let categoria;
+    let precio;
+
+    codigo = ingresarValorString("Ingrese codigo de articulo: ");
+    nombre = ingresarValorString("Ingrese nombre de articulo: ");
+    marca = ingresarValorString("Ingrese marca de articulo: ");
+    categoria = ingresarCategoria();
+    precio = ingresarValorNumber("Ingrese precio de articulo: ");
+
+    const articuloNuevo = new Articulo(id, 
+                                       codigo.toUpperCase(), 
+                                       nombre.toUpperCase(), 
+                                       marca.toUpperCase(), 
+                                       categoria.toUpperCase(), 
+                                       parseFloat(precio));
+    console.log("LOG - cargarArticulos - 9999");
+    return articuloNuevo;
+};
+
+function informarListaPrecioArticulos(lista){
+    console.log("LOG - informarListaPrecioArticulos - 0000");
+    
+    lista.forEach(articulo => {
+    console.log(" - Id: " + articulo.id + 
+                " - Codigo: " + articulo.codigo + 
+                " - Nombre: " + articulo.nombre + 
+                " - Marca: " + articulo.marca  +   
+                " - Categoria: " + articulo.categoria  +    
+                " - Precio: " + articulo.precio);
+    });
+    console.log("LOG - informarListaPrecioArticulos - 9999");     
+};
+
+function informarListaPrecioArticulosConDescuento(){    
+    console.log("LOG - informarListaPrecioArticulosConDescuento - 0000");
+    let porcentaje;
+    porcentaje = ingresarValorNumber("Ingrese porcentaje de descuento: ");    
+    const articulosDescuento = listaPrecioArticulos.map(articulo => {
+        let precioDescuento = articulo.precio - (articulo.precio * (porcentaje/100));
+        return {
+            id: articulo.id,
+            codigo: articulo.codigo,
+            nombre: articulo.nombre,
+            marca: articulo.marca,
+            categoria: articulo.categoria,
+            precio: precioDescuento
+        };
+    });
+    informarListaPrecioArticulos(articulosDescuento);
+    console.log("LOG - informarListaPrecioArticulosConDescuento - 9999");
+};
+
+function buscarArticuloPorId(){    
+    console.log("LOG - buscarArticuloPorId - 0000");
+    let id;
+    id = ingresarValorNumber("Ingrese id del articulo: ");    
+    if (listaPrecioArticulos.some(articulo => articulo.id == id)){
+       let articuloEncontrado = listaPrecioArticulos.find(articulo => articulo.id == id);
+      console.log(" - Id: " + articuloEncontrado.id + 
+                " - Codigo: " + articuloEncontrado.codigo + 
+                " - Nombre: " + articuloEncontrado.nombre + 
+                " - Marca: " + articuloEncontrado.marca  +   
+                " - Categoria: " + articuloEncontrado.categoria  +     
+                " - Precio: " + articuloEncontrado.precio);
+    } else {
+        alert("Id invalido");
+    };
+    console.log("LOG - buscarArticuloPorId - 9999");
+};
+
+function buscarArticuloPorCategoria(){    
+    console.log("LOG - buscarArticuloPorCategoria - 0000");
+    let categoria;
+    categoria = ingresarCategoria();    
+    let articulosEncontrados = listaPrecioArticulos.filter(articulo => articulo.categoria.toUpperCase() == categoria.toUpperCase() );    
+    informarListaPrecioArticulos(articulosEncontrados);
+    console.log("LOG - buscarArticuloPorCategoria - 9999");
+};
+
+function buscarArticuloPorNombre(){    
+    console.log("LOG - buscarArticuloPorNombre - 0000");
+    let nombre;
+    nombre = ingresarValorString("Ingrese el nombre o parte del nombre, (por ejemplo smart, inverter): ");
+    console.log("LOG - buscarArticuloPorNombre - 0010 - nombre: " + nombre);   
+    let articulosEncontrados = listaPrecioArticulos.filter(articulo => articulo.nombre.toUpperCase().includes(nombre.toUpperCase()) );
+    if (articulosEncontrados.length == 0) {
+      console.log("No existen articulos que contengan ese valor: " + nombre);
+    } else {
+      informarListaPrecioArticulos(articulosEncontrados);
+    }
+    console.log("LOG - buscarArticuloPorNombre - 9999");
+};
+
+function verificarExisteArticulo(){    
+    console.log("LOG - verificarExisteArticulo - 0000");
+    let codigo;
+    codigo = ingresarValorString("Ingrese el codigo de articulo: ");
+    console.log("LOG - verificarExisteArticulo - 0010 - codigo: " + codigo);   
+    let existeCodigo = listaPrecioArticulos.some(articulo => articulo.codigo.toUpperCase() == codigo.toUpperCase() );
+    if (!existeCodigo){
+       console.log("El articulo no existe");
+    } else {
+       console.log("El articulo si existe " );
+    };
+    console.log("LOG - verificarExisteArticulo - 9999");
+};
+
+function validarArticuloIngresado(id, categoria){
+     console.log("LOG - validarArticuloIngresado - 0000 - id: " + id);     
+     let articuloEncontrado;
+     if (listaPrecioArticulos.some(articulo => articulo.id == id )){
+        articuloEncontrado = listaPrecioArticulos.find(articulo => articulo.id == id);
+        if (articuloEncontrado.id == id && articuloEncontrado.categoria == categoria){
+            return true;
+        } else {
+            alert("Id invalido");
+            return false;
+        };
+     } ;
+};
+
+function cargarCompra(codigo, nombre, precio, cantidad){    
+    const compraNueva = new Compra(codigo, nombre, precio, cantidad);     
+    carritoCompras.push(compraNueva);
+};
+
+function seleccionarContinua(){
+    let valor;
+    do {
+        valor = ingresarValorString("Continua comprando(SI/NO): ");        
+    } while (!validaSiNo(valor));
+    return booleanoSiNo(valor);
+};
+
+function comprar(){
+    console.log("LOG - comprar - 0000");
+    let articuloIngresado;
+    let categoria;
+    let continua;
+    do {
+            categoria = ingresarCategoria();
+            console.log("LOG - Comprar - 0010 - categoria: " +  categoria);   
+            let articulosEncontrados = listaPrecioArticulos.filter(articulo => articulo.categoria == categoria);
+            let listaArticulos = "Ingrese el id de articulo valido:\n";
+            articulosEncontrados.forEach(articulo => {
+            listaArticulos += " - Id: " + articulo.id + 
+                        " - Nombre: " + articulo.nombre + 
+                        " - Precio: " + articulo.precio + "\n";
+            });
+
+            do {
+                articuloIngresado = ingresarValorNumber(listaArticulos);
+            } while (!validarArticuloIngresado(articuloIngresado, categoria));
+
+            let articuloDeLista = listaPrecioArticulos.find(articulo => articulo.id == articuloIngresado );
+
+            console.log("LOG - Comprar - 0020 - id: " +  articuloDeLista.id +
+                                             ", nombre: " + articuloDeLista.nombre +
+                                             ", precio: " + articuloDeLista.precio
+            );
+
+            let cantidad;
+            cantidad = ingresarValorNumber("Ingrese la cantidad: ");
+            console.log("LOG - Comprar - 0030 - cantidad: " +  cantidad);
+            cargarCompra(articuloDeLista.codigo, articuloDeLista.nombre, parseInt(articuloDeLista.precio), parseInt(cantidad));
+            console.log("LOG - Comprar - 0040 - cargarCompra()");
+            continua = seleccionarContinua();
+    } while (continua);
+    
+    const total = carritoCompras.reduce((sumador, compra)  => sumador + (parseInt(compra.cantidad)*parseInt(compra.precio)),0);
+
+    console.log("LOG - comprar - 9910 - El total de compras del carrito es: " + total);
+    carritoCompras.splice(0,carritoCompras.length);
+    console.log("LOG - comprar - 9990 - Se borro el contenido del carrito de compras, cantidad de registros: " + carritoCompras.length);
+    console.log("LOG - comprar - 9999");
+};
+
+function seleccionarOpcionMenu(){
+  console.log("LOG - SeleccionarOpcionMenu - 0000");
+  let opcionMenu = prompt("MODULO DE ARTICULOS, PRECIOS, COMPRAS\n\n" + 
+                          "Seleccione opcion:\n" + 
+                          " 1-Crea Articulos\n" +
+                          " 2-Lista de Articulos\n" +
+                          " 3-Lista de Articulos con Descuento\n" +
+                          " 4-Buscar Articulo por Id\n" +
+                          " 5-Buscar Articulo por Categoria\n" +
+                          " 6-Buscar Articulo por Nombre\n" +
+                          " 7-Verificar Existencia Articulo\n" +
+                          " 8-Comprar\n" +
+                          " 9-Salida"
+                         );
+  console.log("LOG - seleccionarOpcionMenu - 0010 - opcionMenu = " + opcionMenu);  
+  if (esNulo(opcionMenu)){
+     opcionMenu = 0;
+  };
+  console.log("LOG - seleccionarOpcionMenu - 9999");
+  return parseInt(opcionMenu);     
+};
+
 // funcion principal
 function functionPrincipalSimulador(){
-
   console.log("LOG - ----------------------------------");
   console.log("LOG - 0000 - PROCESO PRINCIPAL - INICIO");
   console.log("LOG - ----------------------------------"); 
-
   let salir = false;
-
   do {
-
       switch(seleccionarOpcionMenu()){
             case 0:
                  alert("Debe ingresar un valor, vuelva a ingresar la opcion");
@@ -178,7 +447,7 @@ function functionPrincipalSimulador(){
                  listaPrecioArticulos.push(cargarArticulo());
                  break;
             case 2:
-                 informarListaPrecioArticulos();
+                 informarListaPrecioArticulos(listaPrecioArticulos);
                  break;   
             case 3:
                  informarListaPrecioArticulosConDescuento();
@@ -204,528 +473,11 @@ function functionPrincipalSimulador(){
             default:
                  alert("Opcion invalida, vuelva a ingresar la opcion");
       };
-
   } while (!salir);
-
   console.log("LOG - ----------------------------------");
   console.log("LOG - 9999 - PROCESO PRINCIPAL - FIN ");
   console.log("LOG - ----------------------------------");
-
 };
 
 // ejecuta la funcion principal
 functionPrincipalSimulador();
-
-/*
-  FUNCIONES PRIMARIAS
-*/
-function seleccionarOpcionMenu(){
-
-  console.log("LOG - SeleccionarOpcionMenu - 0000");
-
-  let opcionMenu = prompt("MODULO DE ARTICULOS, PRECIOS, COMPRAS\n\n" + 
-                          "Seleccione opcion:\n" + 
-                          " 1-Crea Articulos\n" +
-                          " 2-Lista de Articulos\n" +
-                          " 3-Lista de Articulos con Descuento\n" +
-                          " 4-Buscar Articulo por Id\n" +
-                          " 5-Buscar Articulo por Categoria\n" +
-                          " 6-Buscar Articulo por Nombre\n" +
-                          " 7-Verificar Existencia Articulo\n" +
-                          " 8-Comprar\n" +
-                          " 9-Salida"
-                         );
-
-  console.log("LOG - seleccionarOpcionMenu - 0010 - opcionMenu = " + opcionMenu);
-  
-  if (esNulo(opcionMenu)){
-     opcionMenu = 0;
-  };
-
-  console.log("LOG - seleccionarOpcionMenu - 9999");
-
-  return parseInt(opcionMenu);     
-};
-
-function cargarArticulo(){
-    let id = listaPrecioArticulos.length+1;
-    let codigo;
-    console.log("id: " + id);
-    do {
-        codigo = prompt("Ingrese codigo de articulo: ");
-    } while (!validarCodigo(codigo));
-
-    let nombre;
-    do {
-        nombre = prompt("Ingrese nombre de articulo: ");
-    } while (!validarNombre(nombre));
-
-    let marca;
-    do {
-         marca = prompt("Ingrese marca de articulo: ");
-    } while (!validarMarca(marca));
-
-
-    let categoria;
-    do {
-         categoria = prompt("Ingrese categoria de articulo: ");
-    } while (!validarCategoria(categoria));
-
-    let precio;
-    do {
-         precio = prompt("Ingrese precio de articulo: ");
-    } while (!validarPrecio(precio));
-
-    const articuloNuevo = new Articulo(id, codigo.toUpperCase(), nombre.toUpperCase(), marca.toUpperCase(), parseFloat(precio));
-
-    return articuloNuevo;
-
-};
-
-function validarCodigo(codigo){
-
-     if (esNulo(codigo)) {
-        alert("(Validar Codigo) - Debe ingresar un valor");                    
-        return false;
-      } else {
-        return true;
-     };
-
-};
-
-function validarNombre(nombre){
-
-     if (esNulo(nombre)) {
-        alert("(Validar Nombre) - Debe ingresar un valor");                    
-        return false;
-      } else {
-        return true;
-     };
-
-};
-
-function validarMarca(marca){
-
-     if (esNulo(marca)) {
-        alert("(Validar Marca) - Debe ingresar un valor");                    
-        return false;
-      } else {
-        return true;
-     };
-
-};
-
-function validarCategoria(categoria){
-
-     if (esNulo(categoria)) {
-        alert("(Validar Categoria) - Debe ingresar un valor");                    
-        return false;
-      } else {
-        return true;
-     };
-
-};
-
-function validarPrecio(precio){
-
-     if (esNulo(precio)) {
-        alert("(Validar Precio) - Debe Ingresar un Valor");                    
-        return false;
-      } else if (esString(precio)) { 
-        alert("(Validar Precio) - Debe ingresar un valor numerico");                    
-        return false;
-      } else {
-        return true;
-     };
-
-};
-
-function validarPorcentaje(porcentaje){
-
-     if (esNulo(porcentaje)) {
-        alert("(Validar Porcenaje) - Debe ingresar un valor");                    
-        return false;
-      } else if (esString(porcentaje)) { 
-        alert("(Validar Porcentaje) - Debe ingresar un valor numerico");                    
-        return false;
-      } else {
-        return true;
-     };
-};
-
-function informarListaPrecioArticulos(){
-
-    console.log("LOG - informarListaPrecioArticulos - 0000");
-
-    listaPrecioArticulos.forEach(articulo => {
-    console.log(" - Id: " + articulo.id + 
-                " - Codigo: " + articulo.codigo + 
-                " - Nombre: " + articulo.nombre + 
-                " - Marca: " + articulo.marca  +   
-                " - Categoria: " + articulo.categoria  +    
-                " - Precio: " + articulo.precio);
-    });
-
-    console.log("LOG - informarListaPrecioArticulos - 9999");     
-
-};
-
-function informarListaPrecioArticulosConDescuento(){
-    
-    console.log("LOG - informarListaPrecioArticulosConDescuento - 0000");
-
-    let porcentaje;
-    do {
-           porcentaje = prompt("Ingrese porcentaje de descuento: ");
-    } while (!validarPorcentaje(porcentaje));
-
-    const articulosDescuento = listaPrecioArticulos.map(articulo => {
-        let precioDescuento = articulo.precio - (articulo.precio * (porcentaje/100));
-        return {
-            id: articulo.id,
-            codigo: articulo.codigo,
-            nombre: articulo.nombre,
-            marca: articulo.marca,
-            categoria: articulo.categoria,
-            precio: precioDescuento
-        };
-    });
-
-    articulosDescuento.forEach(articulo => {
-    console.log(" - Id: " + articulo.id + 
-                " - Codigo: " + articulo.codigo + 
-                " - Nombre: " + articulo.nombre + 
-                " - Marca: " + articulo.marca  +  
-                " - Categoria: " + articulo.categoria  +    
-                " - Precio: " + articulo.precio);
-    });
-
-    console.log("LOG - informarListaPrecioArticulosConDescuento - 9999");
-
-};
-
-
-function buscarArticuloPorId(){
-    
-    console.log("LOG - buscarArticuloPorId - 0000");
-
-    let id;
-    do {
-           id = prompt("Ingrese Id del articulo: ");
-    } while (!validarId(id));
-    
-    if (listaPrecioArticulos.some(articulo => articulo.id == id)){
-
-    let articuloEncontrado = listaPrecioArticulos.find(articulo => articulo.id == id);
-
-    console.log(" - Id: " + articuloEncontrado.id + 
-                " - Codigo: " + articuloEncontrado.codigo + 
-                " - Nombre: " + articuloEncontrado.nombre + 
-                " - Marca: " + articuloEncontrado.marca  +   
-                " - Categoria: " + articuloEncontrado.categoria  +     
-                " - Precio: " + articuloEncontrado.precio);
-
-    alert("Articulo encontrado: " +
-          "\n - Id: " + articuloEncontrado.id + 
-          "\n - Codigo: " + articuloEncontrado.codigo + 
-          "\n - Nombre: " + articuloEncontrado.nombre + 
-          "\n - Marca: " + articuloEncontrado.marca  +    
-          "\n - Categoria: " + articuloEncontrado.categoria  +    
-          "\n - Precio: " + articuloEncontrado.precio);
-    } else {
-        alert("Id invalido");
-    };
-
-    console.log("LOG - buscarArticuloPorId - 9999");
-
-};
-
-function validarId(id){
-
-     if (esNulo(id)) {
-        alert("(Validar Id) - Debe ingresar un valor");                    
-        return false;
-      } else if (esString(id)) { 
-        alert("(Validar Id) - Debe ingresar un valor numerico");                    
-        return false;
-      } else {
-        return true;
-     };
-};
-
-function buscarArticuloPorCategoria(){
-    
-    console.log("LOG - buscarArticuloPorCategoria - 0000");
-
-    let categoria;
-
-    do {
-           categoria = prompt("Ingrese categoria de articulo: "+
-                              "\n - 1 - TELEVISORES" +
-                              "\n - 2 - COCINAS" +
-                              "\n - 3 - HELADERAS" 
-           );
-    } while (!validarCategoria(categoria));
-
-   console.log("LOG - buscarArticuloPorCategoria - 0010 - categoria: " +  categoria);
-
-   switch (parseInt(categoria)){
-            case 1:
-                categoriaSeleccionada = "TELEVISOR";
-                break;
-            case 2:
-                categoriaSeleccionada = "COCINA";
-                break;
-            default:
-                categoriaSeleccionada = "HELADERA";
-                break;
-        };
-    
-    let articulosEncontrados = listaPrecioArticulos.filter(articulo => articulo.categoria == categoriaSeleccionada )
-
-    articulosEncontrados.forEach(articulo => {
-    console.log(" - Id: " + articulo.id + 
-                " - Codigo: " + articulo.codigo + 
-                " - Nombre: " + articulo.nombre + 
-                " - Marca: " + articulo.marca  +  
-                " - Categoria: " + articulo.categoria  +    
-                " - Precio: " + articulo.precio);
-    });
-
-    console.log("LOG - buscarArticuloPorCategoria - 9999");
-
-};
-
-function validarCategoria(categoria){
-
-     if (esNulo(categoria)) {
-        alert("(Validar Categoria - Debe ingresar un valor");                    
-        return false;
-      } else if (esString(categoria)) { 
-        alert("(Validar Categoria) - Debe ingresar un valor numerico");                    
-        return false;
-      } else {
-          if (categoria >=1 && categoria <= 3) {
-            return true;
-          } else {
-            alert("Opcion invalida, vuelva a ingresar la opcion");
-            return false;        
-          };
-     };
-};
-
-function buscarArticuloPorNombre(){
-    
-    console.log("LOG - buscarArticuloPorNombre - 0000");
-
-    let nombre;
-
-    do {
-           nombre = prompt("Ingrese el nombre o parte del nombre, (por ejemplo smart, inverter) " 
-           );
-    } while (!validarNombre(nombre));
-
-    console.log("LOG - buscarArticuloPorNombre - 0010 - nombre: " + nombre);
-   
-    let articulosEncontrados = listaPrecioArticulos.filter(articulo => articulo.nombre.toUpperCase().includes(nombre.toUpperCase()) );
-
-    articulosEncontrados.forEach(articulo => {
-    console.log(" - Id: " + articulo.id + 
-                " - Codigo: " + articulo.codigo + 
-                " - Nombre: " + articulo.nombre + 
-                " - Marca: " + articulo.marca  +  
-                " - Categoria: " + articulo.categoria  +    
-                " - Precio: " + articulo.precio);
-    });
-
-    console.log("LOG - buscarArticuloPorNombre - 9999");
-
-};
-
-
-function validarNombre(nombre){
-
-     if (esNulo(nombre)) {
-        alert("(Validar Nombre) - Debe ingresar un valor");                    
-        return false;
-     } else {          
-            return true;        
-     };
-};
-
-function verificarExisteArticulo(){
-    
-    console.log("LOG - verificarExisteArticulo - 0000");
-
-    let codigo;
-
-    do {
-           codigo = prompt("Ingrese el codigo de articulo: " 
-           );
-    } while (!validarCodigo(codigo));
-
-    console.log("LOG - verificarExisteArticulo - 0010 - codigo: " + codigo);
-   
-    let existeCodigo = listaPrecioArticulos.some(articulo => articulo.codigo.toUpperCase() == codigo.toUpperCase() );
-
-    if (!existeCodigo){
-       alert("El articulo no existe");
-       console.log("El articulo no existe");
-    } else {
-       alert("El articulo si existe " );
-       console.log("El articulo si existe " );
-    };
-
-  console.log("LOG - verificarExisteArticulo - 9999");
-
-};
-
-function comprar(){
-
-    console.log("LOG - comprar - 0000");
-
-    let articulo;
-    let categoria;
-    let seguirComprando = true;
-
-    do {
-
-         do {
-             categoria = prompt("Ingrese categoria de articulo: "+
-                                "\n - 1 - TELEVISORES" +
-                                "\n - 2 - COCINAS" +
-                                "\n - 3 - HELADERAS" 
-                                );
-
-             } while (!validarCategoria(categoria));
-
-             console.log("LOG - Comprar - 0010 - categoria: " +  categoria);
-
-             switch (parseInt(categoria)){
-                    case 1:
-                         categoriaSeleccionada = "TELEVISOR";
-                         break;
-                    case 2:
-                         categoriaSeleccionada = "COCINA";
-                         break;
-                    default:
-                         categoriaSeleccionada = "HELADERA";
-                         break;
-                    };
-    
-            let articulosEncontrados = listaPrecioArticulos.filter(articulo => articulo.categoria == categoriaSeleccionada );
-            let listaArticulos = "Ingrese el id de articulo valido:\n";
-            articulosEncontrados.forEach(articulo => {
-            listaArticulos += " - Id: " + articulo.id + 
-                        " - Nombre: " + articulo.nombre + 
-                        " - Precio: " + articulo.precio + "\n";
-            });
-            let articuloIngresado;
-            do {
-                articuloIngresado = prompt(listaArticulos);
-            } while (!validarArticuloIngresado(articuloIngresado, categoriaSeleccionada));
-
-            let articuloDeLista = listaPrecioArticulos.find(articulo => articulo.id == articuloIngresado );
-
-            console.log("LOG - Comprar - 0020 - id: " +  articuloDeLista.id +
-                                             ", nombre: " + articuloDeLista.nombre +
-                                             ", precio: " + articuloDeLista.precio
-            );
-
-            let cantidad;
-
-            do {
-                cantidad = parseInt(prompt ("Ingrese la cantidad: "));
-            } while (!validarCantidad(cantidad));            
-
-            console.log("LOG - Comprar - 0030 - cantidad: " +  cantidad);
-
-            cargarCompra(articuloDeLista.codigo, articuloDeLista.nombre, parseInt(articuloDeLista.precio), parseInt(cantidad));
-
-            console.log("LOG - Comprar - 0040 - cargarCompra()");
-
-            do {
-                 continua = prompt("Continua comprando(SI/NO): ");
-            } while (!validarContinua(continua));
-
-            
-            console.log("LOG - Comprar - 0050 - continua: " + continua);
-
-            if (continua.toUpperCase() == "SI") { seguirComprando = true;} else { seguirComprando = false;};
-
-    } while (seguirComprando);
-    
-    const total = carritoCompras.reduce((sumador, compra)  => sumador + (parseInt(compra.cantidad)*parseInt(compra.precio)),0);
-
-    console.log("El total de compras del carrito es: " + total);
-    alert("El total de compras del carrito es: " + total);
-
-    carritoCompras.splice(0,carritoCompras.length);
-
-    console.log("LOG - comprar - 9990 - se borro el contenido del carrito de compras: " + carritoCompras.length)
-
-    console.log("LOG - comprar - 9999");
-
-};
-
-
-function validarArticuloIngresado(id, categoria){
-
-     console.log("LOG - validarArticuloIngresado - 0000 - id: " + id);
-     
-     let articuloEncontrado;
-
-     if (!validarId(id)) {
-        return false;
-     };
-
-     if (listaPrecioArticulos.some(articulo => articulo.id == id )){
-
-        articuloEncontrado = listaPrecioArticulos.find(articulo => articulo.id == id);
-
-        if (articuloEncontrado.id == id && articuloEncontrado.categoria == categoria){
-            return true;
-        } else {
-            alert("Id invalido");
-            return false;
-        };
-
-     } ;
-
-};
-function validarCantidad(cantidad){
-    
-
-     if (esNulo(cantidad)) {
-        alert("(Validar Cantidad) - Debe ingresar un valor");                    
-        return false;
-      } else if (esString(cantidad)) { 
-        alert("(Validar Cantidad) - Debe ingresar un valor numerico");                    
-        return false;
-      } else {
-        return true;
-     };
-};
-
-function cargarCompra(codigo, nombre, precio, cantidad){
-    
-    const compraNueva = new Compra(codigo, nombre, precio, cantidad);
-     
-    carritoCompras.push(compraNueva);
-};
-
-
-
-function validarContinua(continua){
-
-     if (esNulo(continua)) {
-        alert("(Validar Continua) - Debe ingresar un valor");                    
-        return false;
-      } else if (continua.toUpperCase() == "SI" || continua.toUpperCase() == "NO"){
-        return true;
-      } else {
-        alert("Ingrese un valor valido")  ;
-        return false;
-     };
-
-};
