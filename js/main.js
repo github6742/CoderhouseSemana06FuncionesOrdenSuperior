@@ -146,14 +146,6 @@ class Articulo {
         this.precio = precio;
       };
 };
-class Compra {
-      constructor(codigo, nombre, precio, cantidad) {
-        this.codigo = codigo;
-        this.nombre = nombre;
-        this.precio = precio;
-        this.cantidad = cantidad;
-      };
-};
 
 const esNulo = (valor) => (valor == "");
 const esString = (valor) => (isNaN(Number(valor)));
@@ -354,11 +346,6 @@ function validarArticuloIngresado(id, categoria){
      } ;
 };
 
-function cargarCompra(codigo, nombre, precio, cantidad){    
-    const compraNueva = new Compra(codigo, nombre, precio, cantidad);     
-    carritoCompras.push(compraNueva);
-};
-
 function seleccionarContinua(){
     let valor;
     do {
@@ -397,12 +384,14 @@ function comprar(){
             let cantidad;
             cantidad = ingresarValorNumber("Ingrese la cantidad: ");
             console.log("LOG - Comprar - 0030 - cantidad: " +  cantidad);
-            cargarCompra(articuloDeLista.codigo, articuloDeLista.nombre, parseInt(articuloDeLista.precio), parseInt(cantidad));
+            carritoCompras.push([articuloDeLista, cantidad]);
+            console.log("LOG - Comprar - 0035 - cantidad de registros: " + carritoCompras.length);
+            //cargarCompra(articuloDeLista.codigo, articuloDeLista.nombre, parseInt(articuloDeLista.precio), parseInt(cantidad));
             console.log("LOG - Comprar - 0040 - cargarCompra()");
             continua = seleccionarContinua();
     } while (continua);
-    
-    const total = carritoCompras.reduce((sumador, compra)  => sumador + (parseInt(compra.cantidad)*parseInt(compra.precio)),0);
+
+     const total = carritoCompras.reduce((sumador,[articulo,valorCantidad])  => sumador + (parseInt(articulo.precio)*parseInt(valorCantidad)),0);
 
     console.log("LOG - comprar - 9910 - El total de compras del carrito es: " + total);
     carritoCompras.splice(0,carritoCompras.length);
